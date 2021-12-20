@@ -8,25 +8,27 @@ const menuLink = document.getElementsByClassName("menu__link"); // поиск к
 console.log(menuLink);
 
     
-    for (i = 0; i < menuLink.length; i++) {   // присвоение onclick-события элементам menuLink через цикл   (так это можно назвать???)           
+   for (i = 0; i < menuLink.length; i++) {   // присвоение onclick-события элементам menuLink через цикл   (так это можно назвать???)           
     
-       (function(n) {
+      (function(n) {
        menuLink[n].onclick = function (){
         
-        if (menuLink[n].innerHTML == 'О компании') { //тест срабатывания обработчика при клике на элементе меню "О компании" 
-           alert(menuLink[n].innerHTML);
-        };
+        if (menuLink[n].closest('li') != null) {  // если элемент, на котором зафиксирован клик, вложен в элемент списка <li>
 
-        if (menuLink[n].innerHTML == 'Услуги') {  //тест срабатывания обработчика при клике на элементе меню "Услуги"
-            alert(menuLink[n].innerHTML);
+            const selectedPunkts = [...menuLink[n].closest('li').childNodes]; // формируем массив из всех дочерних(вложенных) элементов текущего элемента <li>
+            
+            for (let m = 0; m < selectedPunkts.length; m++) { // перебираем элементы текущего списка (на котором зафиксирован клик)
+               
+               if (selectedPunkts[m].classList.contains("menu_sub")) { // если перебираемый(вложенный) элемент списка содержит класс "menu_sub"
+                alert(selectedPunkts[m]);       // попытка(тест!) вывести в сообщение название (текст) элемента, который содержит вложенный элемент с классом menu_sub
+               }
+            
+            }; 
+         
          };
-        
-        if (menuLink[n].contains("menu_sub")) {  //ДАННОЕ УСЛОВИЕ ПОЧЕМУ-ТО НЕ СРАБАТЫВАЕТ! ?? даже если аргумент поменять на ".menu_sub" или "ul.menu_sub".. и при этом убрать два предыдущих условия if. Почему??? :(
-            alert(menuLink[n].innerHTML);       // попытка вывести в сообщение название (текст) элемента, который содержит вложенный элемент с классом menu_sub
-        };
 
-       };
-    }(i));
-    }
+      };
+      }(i));
+   }
 
 
