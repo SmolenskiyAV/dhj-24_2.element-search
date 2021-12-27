@@ -1,5 +1,6 @@
 // ### Task 2.1 ###
 
+const modals = document.querySelectorAll('.modal');
 const modalMain = document.getElementById("modal_main"); // поиск элемента "окно #modal_main"
 const modalSuccess = document.getElementById("modal_success"); // поиск элемента "окно #modal_success"
 
@@ -23,5 +24,6 @@ function operateModal(event) { // функция операций с актив�
 };
 
 
-document.addEventListener('click', operateModal)  // обработка события клика на один из элементов всей страницы (документа)
-
+for (let i = 0; i < modals.length; i++) {
+    modals[i].onclick = operateModal; // обработка события клика по любому модальному окну
+};
