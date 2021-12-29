@@ -1,42 +1,46 @@
 // ### Task 2.2 ###
 
 const submenuLink = document.querySelectorAll('.menu_sub'); // поиск коллекции с пунктами подменю
-
-   let openedSubMenu;    // переменная, для хранения текущего открытого подменю
+const menuLink = document.querySelector('.menu_main');   // поиск коллекции пунктов меню
+   
+   let openedSubMenu;  // переменная, для хранения текущего открытого подменю
+   
 
    function menuOperate(){
-      
-      if (openedSubMenu != null) {        // если в меню уже есть откытые подменю
-      openedSubMenu.classList.remove('menu_active');   // закрываем открытое подменю
-      openedSubMenu = null;   // откытых подменю больше нет
-      }
      
-      this.querySelector('.menu_sub').classList.add('menu_active');   // открываем выпадающее подменю
-      openedSubMenu = this.querySelector('.menu_sub');                // фиксируем факт наличия открытого подменю
-                 
-      return false;                                  // Запрещаем переход по ссылке для тех пунктов, что имеют вложенное подменю
+     openedSubMenu = menuLink.querySelector('.menu_active'); 
+      
+      if (openedSubMenu !== null) {        // если в меню уже есть откытые подменю
+         openedSubMenu.classList.remove('menu_active');   // закрываем открытое подменю
+      };
+     
+      if (openedSubMenu === null) { // если клик по "новому" элементу с закрытым подменю
+         this.querySelector('.menu_sub').classList.add('menu_active');   // открываем выпадающее подменю
+      };
+        
+      if ((openedSubMenu !== null) && (this.querySelector('.menu_sub') !== openedSubMenu)) { //если клик по новому элементу, а в предыдущем элементе подменю было открыто
+         openedSubMenu.classList.remove('menu_active'); // предыдущее подменю закрываем
+         this.querySelector('.menu_sub').classList.add('menu_active');   // подменю в "новом" элементе открываем
+      };
+
+      if ((openedSubMenu !== null) && (this.querySelector('.menu_sub') === openedSubMenu)) {
+         console.log(this);
+         this.querySelector('.menu_sub').classList.remove('menu_active') 
+         return; // открываем переход по ссылкам в подменю. Однако..при этом, в момент схлопываяния ранее открытого подменю при клике по его корневому элементу меню, происходит ПЕРЕЗАГРУЗКА ВСЕЙ СТРАНИЦЫ :( Как это устранить?
+      }
+
+     return false;   // Запрещаем переход по ссылке для тех пунктов, что имеют вложенное подменю       
    };
 
    for (let i = 0; i < submenuLink.length; i++) {          
-    
-      submenuLink[i].closest('li').onclick = menuOperate;  // присвоение через цикл onclick-события элементам меню, содержащим подменю 
       
+      closestElement = submenuLink[i].closest('li'); // внешний элемент списка
+      
+      closestElement.onclick = menuOperate;  // присвоение через цикл onclick-события элементам меню, содержащим подменю 
    };
-
-
-   const notMunuElement = document.querySelectorAll('div', 'p', 'span'); // формирование коллекции элементов, находящихся на странице, но не содержащей элемента меню <ul>. Предполагается перечеслине всех этих элементов в качестве параметров querySelectorAll. Как без цикла одной строкой вывести всю коллекцию страницы, но без элементов меню <ul> по-другому??? Может есть фильтр для этого метода, в котором можно указать: "выводить всё, кроме <ul>"???
- 
+/* =======================================
+    Перезагрузка страницы исчезает, если return в строке 29 убрать, но тогда перестают работать клики по ссылкам подменю. */ 
    
-   for (m =0; m < notMunuElement.length; m++) {
-
-      notMunuElement[m].onclick = function (){ // обработка клика на любом элементе страницы, кроме меню (чтобы сворачивать уже раскрытое подменю, если клик происходит за пределами меню)
-      
-      if ((openedSubMenu != null)) {        // если в меню уже есть откытые подменю, и клик происходит за пределами меню
-            openedSubMenu.classList.remove('menu_active');   // закрываем открытое подменю
-            openedSubMenu = null;   // откытых подменю больше нет
-         };
-      };
-   };
       
 
 
