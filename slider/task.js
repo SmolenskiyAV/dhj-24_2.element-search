@@ -28,7 +28,18 @@ for (let i = 0; i < sliderItemsArray.length; i++) {  // перебор колл�
 if (activeNumber < dotsArrayLength) dotItemsArray[activeNumber].classList.add('slider__dot_active'); //подсветка точки при первоначальной загрузке страницы
 let activeDot = document.querySelector('.slider__dot_active');  // поиск активной точки на момент первоначальной загрузки страницы
 
-function switchSlide(event) { // функция смены слайдов 
+function changeSideParameters(slideNumber) {  // функция замены активного слайда
+
+    activeSlide.classList.remove('slider__item_active'); // закрытие открытого слайда
+        activeDot.classList.remove('slider__dot_active');   // деактивирование точки
+        sliderItemsArray[slideNumber].classList.add('slider__item_active'); // открытие следующего слайда
+        dotItemsArray[slideNumber].classList.add('slider__dot_active'); // активирование(подсветка) новой точки
+        activeSlide = sliderItemsArray[slideNumber];  // новый открытый слайд (следующий)
+        activeDot = dotItemsArray[slideNumber];       // новая подсвеченная точка
+        activeNumber = slideNumber;
+};
+
+function cicleSwitchSlide(event) { // функция циклической смены выбранных слайдов 
     
     elem = event.target;  // получение элемента, по которому осуществлён клик
     
@@ -37,13 +48,7 @@ function switchSlide(event) { // функция смены слайдов
         if (activeNumber === 0) currentNumber = sliderItemsArray.length - 1 // зацикливание просмотра при достижении начала списка элементов коллекции слайдов
         else currentNumber = activeNumber - 1;
 
-        activeSlide.classList.remove('slider__item_active'); // закрытие открытого слайда
-        activeDot.classList.remove('slider__dot_active');   // деактивирование точки
-        sliderItemsArray[currentNumber].classList.add('slider__item_active'); // открытие следующего слайда
-        dotItemsArray[currentNumber].classList.add('slider__dot_active'); // активирование(подсветка) новой точки
-        activeSlide = sliderItemsArray[currentNumber];  // новый открытый слайд (следующий)
-        activeDot = dotItemsArray[currentNumber];       // новая подсвеченная точка
-        activeNumber = currentNumber;
+        changeSideParameters(currentNumber);
     };
 
     if (elem.classList.contains('slider__arrow_next')) { // // условие клика на стрелку "вправо"
@@ -51,32 +56,20 @@ function switchSlide(event) { // функция смены слайдов
         if (activeNumber === sliderItemsArray.length - 1) currentNumber = 0  // зацикливание просмотра при достижении конца списка элементов коллекции слайдов
         else currentNumber = activeNumber + 1;
 
-        activeSlide.classList.remove('slider__item_active'); // закрытие открытого слайда
-        activeDot.classList.remove('slider__dot_active');   // деактивирование точки
-        sliderItemsArray[currentNumber].classList.add('slider__item_active'); // открытие предыдующего слайда
-        dotItemsArray[currentNumber].classList.add('slider__dot_active'); // активирование(подсветка) новой точки
-        activeSlide = sliderItemsArray[currentNumber];  // новый открытый слайд (предыдущий)
-        activeDot = dotItemsArray[currentNumber];       // новая подсвеченная точка
-        activeNumber = currentNumber;
+        changeSideParameters(currentNumber);
     };
 
 };
 
-document.addEventListener('click', switchSlide)  // обработка события клика на один из элементов управления слайдами
+document.addEventListener('click', cicleSwitchSlide)  // обработка события клика на один из элементов управления слайдами (стрелку)
 
 
-for (m =0; m < dotItemsArray.length; m++) { //цикл для обработки кликов по точкам
+for (let m =0; m < dotItemsArray.length; m++) { //цикл для обработки кликов по точкам
 
-    (function(m) {                          // функция смены слайдов в цикле по кликам на точках
-       dotItemsArray[m].onclick = function (){ // обработка клика на любом элементе коллекции точек "slider__dot"
+    dotItemsArray[m].onclick = function (){ // обработка клика на любом элементе коллекции точек "slider__dot"
        if ((dotItemsArray[m]) && (m <= (dotsArrayLength - 1))) {        
-        activeSlide.classList.remove('slider__item_active'); // закрытие открытого слайда
-        activeDot.classList.remove('slider__dot_active');   // деактивирование точки
-        sliderItemsArray[m].classList.add('slider__item_active'); // открытие слайда, соответсвующего данному элементу точки
-        dotItemsArray[m].classList.add('slider__dot_active'); // активирование(подсветка) новой точки
-        activeSlide = sliderItemsArray[m];  // новый открытый слайд
-        activeDot = dotItemsArray[m];       // новая подсвеченная точка
+        changeSideParameters(m);
        }
-       };
-    }(m));
- }
+    };
+ };
+
