@@ -6,60 +6,58 @@ const sliderItemsArray = [...sliderItems];                   // преобраз
 const arrowPrev = document.querySelector('.slider__arrow_prev'); // поиск элемента "стрелка влево"
 const arrowNext = document.querySelector('.slider__arrow_next'); // поиск элемента "стрелка вправо"
 
-// подсчитываем коллекцию элементов точек отдельно на тот случ, если количество точек в разметке не совпадает с количеством слайдов
 const dotItems = document.querySelectorAll('.slider__dot'); // коллекция всех элементов точек "slider__dot"
 const dotItemsArray = [...dotItems];                   // преобразовываем коллецию точек "slider__dot" в массив объектов
 const dotsArrayLength = sliderItemsArray.length;
 
-
-
-let activeSlide = document.querySelector('.slider__item_active');  // поиск активного(открытого) слайда на момент первоначальной загрузки страницы
-let activeNumber; // переменная номера активного слайда
-let currentNumber;
-
-
-for (let i = 0; i < sliderItemsArray.length; i++) {  // перебор коллекции слайдов
-    if (sliderItemsArray[i].classList.contains( 'slider__item_active')) { // условие поиска номера в коллекцци, принадлежащее первоначально открытому слайду
-        activeNumber = i;  // определение номера активного слайда
-        console.log(activeNumber);
-    };
+if (dotsArrayLength <= sliderItemsArray.length) {  //если количество точек меньше либо равно общему количеству слайдов
+    dotItemsArray[
+        sliderItemsArray.findIndex(item => item.classList.contains( 'slider__item_active')) //номер в коллекцци, принадлежащий открытому слайду на момент первоначальной загрузки страницы
+        ].classList.add('slider__dot_active');         // активировать подсветку точки, при первоначальной загрузке
 };
 
-if (activeNumber < dotsArrayLength) dotItemsArray[activeNumber].classList.add('slider__dot_active'); //подсветка точки при первоначальной загрузке страницы
-let activeDot = document.querySelector('.slider__dot_active');  // поиск активной точки на момент первоначальной загрузки страницы
 
-function changeSideParameters(slideNumber) {  // функция замены активного слайда
+function changeSideParameters(slideNumber, slideItem, dotItem) {  // функция замены активного слайда
 
-    activeSlide.classList.remove('slider__item_active'); // закрытие открытого слайда
-        activeDot.classList.remove('slider__dot_active');   // деактивирование точки
-        sliderItemsArray[slideNumber].classList.add('slider__item_active'); // открытие следующего слайда
-        dotItemsArray[slideNumber].classList.add('slider__dot_active'); // активирование(подсветка) новой точки
-        activeSlide = sliderItemsArray[slideNumber];  // новый открытый слайд (следующий)
-        activeDot = dotItemsArray[slideNumber];       // новая подсвеченная точка
-        activeNumber = slideNumber;
+    slideItem.classList.remove('slider__item_active'); // закрытие открытого слайда
+    dotItem.classList.remove('slider__dot_active');   // деактивирование точки
+    sliderItemsArray[slideNumber].classList.add('slider__item_active'); // открытие следующего слайда
+    dotItemsArray[slideNumber].classList.add('slider__dot_active'); // активирование(подсветка) новой точки
+        
 };
+
 
 function cicleSwitchSlide(event) { // функция циклической смены выбранных слайдов 
     
     elem = event.target;  // получение элемента, по которому осуществлён клик
-    
+
+    let activeNumber = sliderItemsArray.findIndex(item => item.classList.contains( 'slider__item_active')); //поиска номера в коллекцци, принадлежащий открытому слайду
+    if (activeNumber === -1) {
+        activeNumber = 0;
+        console.log ('активный слайд не найден. Его номер установлен по умолчанию = 0.');
+    } else console.log('номер активного слайда = ' + activeNumber);
+
+    let activeSlide = sliderItemsArray[activeNumber];               //активный(открытый) слайд
+    let activeDot = dotItemsArray[activeNumber];                    // активная(подсвечиваемая) точка
+
     if (elem.classList.contains('slider__arrow_prev')) { // условие клика на стрелку "влево"
         
         if (activeNumber === 0) currentNumber = sliderItemsArray.length - 1 // зацикливание просмотра при достижении начала списка элементов коллекции слайдов
         else currentNumber = activeNumber - 1;
 
-        changeSideParameters(currentNumber);
+        changeSideParameters(currentNumber, activeSlide, activeDot);
     };
 
-    if (elem.classList.contains('slider__arrow_next')) { // // условие клика на стрелку "вправо"
+    if (elem.classList.contains('slider__arrow_next')) {    // условие клика на стрелку "вправо"
         
         if (activeNumber === sliderItemsArray.length - 1) currentNumber = 0  // зацикливание просмотра при достижении конца списка элементов коллекции слайдов
         else currentNumber = activeNumber + 1;
 
-        changeSideParameters(currentNumber);
+        changeSideParameters(currentNumber, activeSlide, activeDot);
     };
 
 };
+
 
 document.addEventListener('click', cicleSwitchSlide)  // обработка события клика на один из элементов управления слайдами (стрелку)
 
@@ -67,9 +65,12 @@ document.addEventListener('click', cicleSwitchSlide)  // обработка со
 for (let m =0; m < dotItemsArray.length; m++) { //цикл для обработки кликов по точкам
 
     dotItemsArray[m].onclick = function (){ // обработка клика на любом элементе коллекции точек "slider__dot"
+
+        let activeNumber = sliderItemsArray.findIndex(item => item.classList.contains( 'slider__item_active')); //поиска номера в коллекцци, принадлежащий открытому слайду
+
        if ((dotItemsArray[m]) && (m <= (dotsArrayLength - 1))) {        
-        changeSideParameters(m);
-       }
+        changeSideParameters(m, sliderItemsArray[activeNumber], dotItemsArray[activeNumber]);
+       };
     };
  };
 
